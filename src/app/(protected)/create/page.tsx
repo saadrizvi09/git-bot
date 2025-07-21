@@ -27,13 +27,16 @@ const CreatePage = () => {
   const refetch = useRefetch()
 
   function onSubmit(data: FormInput) {
+    toast.message('Creating project.. This may take a few minutes')
     createProject.mutate(
       {
         githubUrl: data.repoUrl,
         name: data.projectName,
         gitHubToken: data.githubToken,
       },
+      
       {
+        
         onSuccess: () => {
           toast.success('Project created successfully!')
           refetch()
