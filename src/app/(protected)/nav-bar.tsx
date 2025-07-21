@@ -23,7 +23,7 @@ const items = [
 ];
 
 const sidebarItems = [
-  { title: "Ask Questions", url: "/dashboard" },
+  { title: "Ask Questions", url: "/dashboard/askQuestions" },
   { title: "Add Components", url: "/dashboard/addFeatures" },
   { title: "Bug Scanner", url: "/dashboard/error" },
 ];
