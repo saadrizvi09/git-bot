@@ -6,11 +6,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Textarea } from '@/components/ui/textarea'
 import useProject from '@/hooks/use-project'
 import React from 'react'
-import { askQuestion } from './actions'
 import { readStreamableValue } from 'ai/rsc'
-import CodeReferences from './code-references' // Ensure this path is correct
 import { api } from '@/trpc/react'
 import { toast } from 'sonner'
+import { askQuestion } from '../actions'
+import CodeReferences from '../code-references'
 
 const AskQuestionCard = () => {
     const { project } = useProject()
@@ -56,6 +56,7 @@ const AskQuestionCard = () => {
 
     return (
         <>
+             <div className="w-[80vw]"></div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className='sm:max-w-[80vw] flex flex-col h-full max-h-[95vh] p-4'>
                     <DialogHeader className="mb-2">
