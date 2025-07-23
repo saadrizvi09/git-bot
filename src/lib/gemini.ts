@@ -87,8 +87,8 @@ export async function summariseCode(doc: Document) {
             ---
             ${code}
             ---
-            Give a summary(Give directly, don't use Okay, alright etc) no more than 100 words of the code above
-            **Very Important- If there is any bu, give the bug in detail after the summary`,
+            Give a very deep summary(Give directly, don't use Okay, alright etc) of code in the file explaining each stuff.
+            **Very Important- If there is any bug, give the bug in detail after the summary`,
         ]);
 
         if (response.response && response.response.text) {
