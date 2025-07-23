@@ -9,7 +9,7 @@ import { toast } from 'sonner'; // For notifications
 import { Loader } from 'lucide-react'; // For the spinning loader icon
 import Image from 'next/image'; // For displaying GitBot logo in dialog header (if desired)
 import CodeReferences from '../code-references';
-import {  checkBugs } from '../actions';
+import { checkBugs } from '../actions';
 import { api } from '@/trpc/react';
 
 const Scanerror = () => {
@@ -18,8 +18,9 @@ const Scanerror = () => {
   const [scanAnswer, setScanAnswer] = React.useState(''); // State for the streamed answer
   const [scanFilesReferences, setScanFilesReferences] = React.useState<{ fileName: string; sourceCode: string; summary: string }[]>([]); // State for file references
   const [isResultsDialogOpen, setIsResultsDialogOpen] = React.useState(false); // State to control the results dialog
-    const saveAnswer = api.project.saveAnswer.useMutation()
-  const question = "SCANNED BUGS"; 
+  const saveAnswer = api.project.saveAnswer.useMutation();
+  const question = "SCANNED BUGS";
+
   const handleGoClick = async () => {
     setScanAnswer(''); // Clear previous results
     setScanFilesReferences([]);
@@ -58,13 +59,15 @@ const Scanerror = () => {
 
   return (
     <>
-         <div className="w-[80vw]"></div>
-
-      {/* The existing w-[80vw] div for positioning, as requested by the user */}
+                 <div className="w-[80vw]"></div>
 
       {/* Main Container for the Scan Section */}
-      <div className="flex flex-col pl-70 pt-10 justify-center w-[80vw] bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        <div className="bg-white dark:bg-gray-800 shadow-xl w-[60vw] rounded-lg p-8 md:p-12  max-w-2xl text-center flex flex-col items-center">
+      {/* Removed pl-70 and w-[80vw]. Added p-4 for general padding and max-w-full for responsiveness. */}
+      {/* Centered with mx-auto and flex justify-center */}
+      <div className="flex flex-col items-center justify-center p-4 mx-auto w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        {/* Adjusted inner div width and centering */}
+      
+        <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8 md:p-12 max-w-2xl w-full text-center flex flex-col items-center">
 
           {/* Title/Header */}
           <h1 className="text-4xl md:text-5xl font-extrabold mb-6 ">
@@ -76,11 +79,12 @@ const Scanerror = () => {
             Click the "Go" button to initiate a comprehensive scan of your repository
             for potential bugs, vulnerabilities, and code issues.
           </p>
+          <div className="p-5"></div>
 
           {/* The Big Centered Go Button */}
           <Button
             onClick={handleGoClick}
-            disabled={ !project?.id} // Disable if loading or no project is selected
+            disabled={!project?.id} // Disable if loading or no project is selected
             className="
               relative
               w-36 h-36 md:w-48 md:h-48 rounded-full
@@ -94,63 +98,55 @@ const Scanerror = () => {
               overflow-hidden
             "
           >
-            
-              <span className="relative z-10"> GO </span>
-            
+            <span className="relative z-10"> GO </span>
           </Button>
+          <div className='p-10'>
 
-          {/* Placeholder for future status/results */}
-          
+          </div>
         </div>
       </div>
 
       {/* Dialog for displaying Scan Results */}
       <Dialog open={isResultsDialogOpen} onOpenChange={setIsResultsDialogOpen}>
-        <DialogContent className='sm:max-w-[80vw] flex flex-col h-full max-h-[95vh] p-4'>
+        {/* Adjusted DialogContent for better mobile sizing and full height */}
+        <DialogContent className='sm:max-w-[95vw] md:max-w-[80vw] flex flex-col h-full max-h-[95vh] p-4'>
           <DialogHeader className="mb-2">
-                                  <div className="flex items-center justify-between px-6">
-                                      <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                         GitBot Bug Scanner
-                                      </DialogTitle>
-                                                                        
-                                      
-                                      <Button 
-                                          disabled={saveAnswer.isPending || scanAnswer.length === 0}
-                                          variant={'outline'}
-                                          onClick={() => {
-                                              if (!project?.id) {
-                                                  toast.error('Project ID not found. Cannot save.');
-                                                  return;
-                                              }
-                                              saveAnswer.mutate({
-                                                  projectId: project.id,
-                                                  question,
-                                                  answer:scanAnswer,
-                                                  filesReferences:scanFilesReferences
-                                              }, {
-                                                  onSuccess: () => {
-                                                      toast.success('Answer saved!');
-                                                  },
-                                                  onError: () => {
-                                                      toast.error('Failed to save answer!');
-                                                  }
-                                              })
-                                          }}>
-                                          {saveAnswer.isPending ? 'Saving...' : 'Save Answer'}
-                                      </Button>
-                                     
-                                  </div>
-                              </DialogHeader>
+            <div className="flex items-center justify-between px-6">
+              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                GitBot Bug Scanner
+              </DialogTitle>
+              <Button
+                disabled={saveAnswer.isPending || scanAnswer.length === 0}
+                variant={'outline'}
+                onClick={() => {
+                  if (!project?.id) {
+                    toast.error('Project ID not found. Cannot save.');
+                    return;
+                  }
+                  saveAnswer.mutate({
+                    projectId: project.id,
+                    question,
+                    answer: scanAnswer,
+                    filesReferences: scanFilesReferences
+                  }, {
+                    onSuccess: () => {
+                      toast.success('Answer saved!');
+                    },
+                    onError: () => {
+                      toast.error('Failed to save answer!');
+                    }
+                  });
+                }}>
+                {saveAnswer.isPending ? 'Saving...' : 'Save Answer'}
+              </Button>
+            </div>
+          </DialogHeader>
 
           {/* Two-column layout for results: Answer (Markdown) and Code References */}
           <div className="flex-grow flex flex-col md:flex-row gap-4 overflow-hidden">
             {/* Answer Column */}
             <div className="flex-1 flex flex-col border rounded-md overflow-hidden">
               <h3 className="p-2 text-lg font-semibold bg-gray-100 dark:bg-gray-800 border-b rounded-t-md">Scan Report</h3>
-              {/*
-                Removed `items-center justify-center` from this div to allow content to start from the top.
-                Removed `bg-white dark:bg-gray-800` from this div's classes.
-              */}
               <div className="flex-grow overflow-y-auto p-2">
                 {(loading && scanAnswer.length === 0) ? (
                   <div className="flex items-center justify-center h-full w-full">
@@ -159,7 +155,6 @@ const Scanerror = () => {
                 ) : (
                   <MDEditor.Markdown
                     source={scanAnswer}
-                    // RE-ADDED bg-white text-black here to match ask-question-card.tsx for consistent background
                     className='prose prose-sm md:prose-base lg:prose-lg xl:prose-xl max-w-none bg-white text-black'
                   />
                 )}
@@ -169,7 +164,7 @@ const Scanerror = () => {
             {/* Code References Column */}
             <div className="flex-1 flex flex-col border rounded-md overflow-hidden">
               <h3 className="p-2 text-lg font-semibold bg-gray-100 dark:bg-gray-800 border-b rounded-t-md">Relevant Code</h3>
-              <div className="flex-grow overflow-y-auto p-2 bg-white dark:bg-gray-800"> {/* Retained bg for this side */}
+              <div className="flex-grow overflow-y-auto p-2 bg-white dark:bg-gray-800">
                 <CodeReferences filesReferences={scanFilesReferences} />
               </div>
             </div>

@@ -210,7 +210,7 @@ export async function addComponent(componentDescription: string, projectId: stri
              const{textStream} = await streamText({
                 model:google('gemini-2.0-flash'), // This call is now rate-limited
                 prompt:`
-                You are an AI assistant specialized in React/Next.js component architecture and integration.
+                You are an AI assistant specialized in full stack component architecture and integration.
                     Your task is to provide clear, step-by-step instructions on how and where to add a new component
                     into an existing codebase.
 
