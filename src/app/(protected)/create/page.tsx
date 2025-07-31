@@ -107,7 +107,6 @@ const CreatePage = () => {
                 id="githubToken"
                 {...register('githubToken')}
                 placeholder=""
-                type="password"
                 autoComplete="new-password" // Changed: Standard for signaling a new, non-saved password
               />
             
