@@ -2,7 +2,6 @@
 import {streamText} from 'ai'
 import{createStreamableValue} from 'ai/rsc'
 import{createGoogleGenerativeAI} from'@ai-sdk/google'
-// Make sure to import geminiApiLimiter here!
 import { generateEmbedding, geminiApiLimiter } from '@/lib/gemini'
 import { db } from '@/server/db'
 
