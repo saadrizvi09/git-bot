@@ -187,7 +187,7 @@ export async function addComponent(componentDescription: string, projectId: stri
             SELECT "fileName","sourceCode","summary",
             1- ("summaryEmbedding"<=>${vectorQuery}::vector) AS similarity
             FROM "SourceCodeEmbedding"
-            WHERE 1-("summaryEmbedding"<=> ${vectorQuery}::vector)> .5
+            WHERE 1-("summaryEmbedding"<=> ${vectorQuery}::vector)> .1
             AND "projectId"=${projectId}
             ORDER BY similarity DESC
             LIMIT 10

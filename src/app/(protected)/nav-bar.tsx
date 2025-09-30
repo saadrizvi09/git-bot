@@ -18,8 +18,9 @@ type MainNavbarProps = {
 const items = [
   { title: "Home", url: '/' },
   { title: "Dashboard", url: '/dashboard' },
-  { title: "Saved", url: "/saved" },
   { title: "Summarised Commits", url: '/commit' },
+  { title: "Payments", url: "/billings"}
+
 ];
 
 const sidebarItems = [
