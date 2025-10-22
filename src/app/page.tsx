@@ -1,17 +1,25 @@
-// app/page.tsx
-'use client';
-
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Bug, Bot, Code, PlusCircle } from 'lucide-react';
 import React from 'react';
-import { MainNavbar } from './(protected)/nav-bar';
 
 const HomePage = () => {
   return (
     
     <div className="min-h-screen bg-white text-gray-900 dark:bg-black dark:text-gray-100 flex flex-col">
-      <MainNavbar />
+      <header className="w-full bg-white dark:bg-black text-gray-900 dark:text-gray-100 p-4 flex justify-between items-center shadow-md">
+        <Link href="/" className="text-2xl font-bold">
+          Git-Bot
+        </Link>
+        <nav className="space-x-4">
+          <Button asChild variant="ghost">
+            <Link href="/sign-in">Sign In</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/sign-up">Sign Up</Link>
+          </Button>
+        </nav>
+      </header>
 
       {/* Main content area, pushed down by the Navbar's height */}
       <main className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -22,7 +30,7 @@ const HomePage = () => {
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
             Your <span className="text-black dark:text-white">AI Code Assistant</span>
           </h1>
-          {/* Tagline - Greyscale for subtlety */}
+          {/* Tagline - Greyscale for subtlety */} 
           <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
             Streamline your development workflow with intelligent insights and automated tasks.
           </p>
@@ -46,7 +54,7 @@ const HomePage = () => {
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-gray-100">
             Features that Empower Your Workflow
           </h2>
-          {/* Grid layout for feature cards, responsive across screen sizes */}
+          {/* Grid layout for feature cards, responsive across screen sizes */} 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature Card 1: AI Code Assistant */}
             <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg shadow-md flex flex-col items-center text-center transform transition-transform duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700">

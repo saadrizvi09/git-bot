@@ -5,6 +5,7 @@ export default function Page() {
     // Tailwind classes for full screen, centering, and a WHITE background
     <div className="min-h-screen flex items-center justify-center bg-white p-4">
       <SignIn
+        afterSignInUrl="/dashboard"
         appearance={{
           // Variables for a light black/white/gray theme that sits on a white page
           variables: {

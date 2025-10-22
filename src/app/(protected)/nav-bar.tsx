@@ -16,7 +16,6 @@ type MainNavbarProps = {
 };
 
 const items = [
-  { title: "Home", url: '/' },
   { title: "Dashboard", url: '/dashboard' },
   { title: "Summarised Commits", url: '/commit' },
   { title: "Payments", url: "/billings"}
@@ -60,6 +59,7 @@ export function MainNavbar({ className }: MainNavbarProps) {
                       defaultLinkClasses,
                       { [activeLinkClasses]: item.url === '/' ? pathname === '/' : pathname.startsWith(item.url) }
                     )}
+                    suppressHydrationWarning={true}
                   >
                     {item.title}
                   </Link>
@@ -95,7 +95,9 @@ export function MainNavbar({ className }: MainNavbarProps) {
                     className={cn(
                       "font-medium hover:text-primary py-2 px-4 rounded-md",
                       { "bg-gray-100 dark:bg-gray-700":  pathname=== item.url
-                      },'list-none')}>
+                      },'list-none')}
+                    suppressHydrationWarning={true}
+                  >
                     {item.title}
                   </Link>
                 ))}
@@ -112,7 +114,9 @@ export function MainNavbar({ className }: MainNavbarProps) {
                     className={cn(
                       "font-medium hover:text-primary py-2 px-4 rounded-md",
                       { "bg-gray-100 dark:bg-gray-700":  pathname=== item.url
-                      },'list-none')}>
+                      },'list-none')}
+                    suppressHydrationWarning={true}
+                  >
                     {item.title}
                   </Link>
                 ))}
@@ -132,6 +136,7 @@ export function MainNavbar({ className }: MainNavbarProps) {
                           "block px-4 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
                           { "bg-gray-100 dark:bg-gray-700": project.id === projectId }
                         )}
+                        suppressHydrationWarning={true}
                       >
                         {project.name}
                       </Link>
