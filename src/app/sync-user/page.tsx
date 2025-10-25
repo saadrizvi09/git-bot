@@ -33,7 +33,7 @@ const SyncUser = async () => {
         },
 
 })
-  return( redirect('/'))
+  return( redirect('/dashboard'))
   
 }
 
