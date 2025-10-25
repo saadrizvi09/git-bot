@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Bug, Bot, Code, PlusCircle } from 'lucide-react';
 import React from 'react';
+import { UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
 
 const HomePage = () => {
   return (
@@ -12,12 +13,17 @@ const HomePage = () => {
           Git-Bot
         </Link>
         <nav className="space-x-4">
-          <Button asChild variant="ghost">
-            <Link href="/sign-in">Sign In</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/sign-up">Sign Up</Link>
-          </Button>
+          <SignedOut>
+            <Button asChild variant="ghost">
+              <Link href="/sign-in">Sign In</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/sign-up">Sign Up</Link>
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </nav>
       </header>
 
