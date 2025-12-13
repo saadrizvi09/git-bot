@@ -1,26 +1,34 @@
 import {GithubRepoLoader} from '@langchain/community/document_loaders/web/github'
-// REMOVE THIS: import pLimit from 'p-limit';
-// REMOVE THIS: const MAX_CONCURRENT_GEMINI_CALLS = 7;
-// REMOVE THIS: const apiLimiter = pLimit(MAX_CONCURRENT_GEMINI_CALLS);
-
+import { Octokit } from 'octokit';
 import {Document} from '@langchain/core/documents'
-// These functions (generateEmbedding, summariseCode) already have the rate limit and delay built-in from gemini.ts
 import { generateEmbedding, summariseCode } from './gemini'
 import { db } from '@/server/db'
 
 export const loadGithubRepo = async(githubUrl:string,githubToken?:string)=>
-{
-    const loader= new GithubRepoLoader(githubUrl,{
-        accessToken:githubToken || '',
-        branch:'main',
-        ignoreFiles:['package-lock.json','yarn-lock','pnpm-lock.yaml','bun.lockb'],
-        recursive:true,
-        unknown:'warn',
-        maxConcurrency:5 // This concurrency is for the GithubRepoLoader itself, not Gemini API. Keep this if you want.
-    })
-    const docs =await loader.load()
-    return docs
-}
+    {
+        // Extract owner and repo from URL to detect default branch
+        const [owner, repo] = githubUrl.split('/').slice(-2);
+        
+        // Use Octokit to get repository info and default branch
+        const octokit = new Octokit({ auth: githubToken || process.env.GITHUB_TOKEN || '' });  
+              const { data: repoInfo } = await octokit.rest.repos.get({
+            owner: owner || '',
+            repo: repo || ''
+        });
+        
+        const defaultBranch = repoInfo.default_branch;
+        
+        const loader= new GithubRepoLoader(githubUrl,{
+            accessToken:githubToken || '',
+            branch: defaultBranch, // Use the actual default branch
+            ignoreFiles:['package-lock.json','yarn-lock','pnpm-lock.yaml','bun.lockb'],
+            recursive:true,
+            unknown:'warn',
+            maxConcurrency:5
+        })
+        const docs =await loader.load()
+        return docs
+    }
 
 export const indexGithubRepo =async(projectId:string,githubUrl:string,githubToken?:string)=>{
     const docs=await loadGithubRepo(githubUrl,githubToken)

@@ -60,7 +60,7 @@ export async function askQuestion(question: string, projectId: string) {
     (async () => {
         try {
             const { textStream } = await streamText({
-                model: google('gemini-2.0-flash'),
+                model: google('gemini-2.5-flash'),
                 prompt: `
                     You are an AI code assistant who answers questions about the codebase. Your target audience is a technical intern.
                     The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
@@ -131,7 +131,7 @@ export async function checkBugs(question:string,projectId:string)
     (async ()=>{
         try {
             const{textStream} = await streamText({
-                model:google('gemini-2.0-flash'), // This call is now rate-limited
+                model:google('gemini-2.5-flash'), 
                 prompt:`
                 You are an AI code assistant who answers questions about the codebase. Your target audience is a technical intern.
                 The traits of AI include expert knowledge, helpfulness, cleverness, and articulateness.
@@ -207,7 +207,7 @@ export async function addComponent(componentDescription: string, projectId: stri
     (async () => {
         try {
              const{textStream} = await streamText({
-                model:google('gemini-2.0-flash'), // This call is now rate-limited
+                model:google('gemini-2.5-flash'), // This call is now rate-limited
                 prompt:`
                 You are an AI assistant specialized in full stack component architecture and integration.
                     Your task is to provide clear, step-by-step instructions on how and where to add a new component

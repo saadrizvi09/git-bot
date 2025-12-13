@@ -5,33 +5,51 @@ import { indexGithubRepo } from '@/lib/github-loader';
 import { TRPCError } from "@trpc/server"; // Import TRPCError for throwing specific errors
 
 export const projectRouter =createTRPCRouter({
-    createProject:protectedProcedure.input(
-    
-       z.object({
-        name: z.string(),
-        githubUrl:z.string(),
-        gitHubToken:z.string().optional()
-
-       })
-    ).mutation(async ({ctx,input})=>  {
-        
-      const project=await ctx.db.project.create({
-            data:{
-                githubUrl:input.githubUrl,
-                name:input.name,
-                userToProjects:{
-                    create:{
-                        userId:ctx.user.userId!,
-
-                    }
-                }
-            }
+// Update the createProject mutation to deduct points
+createProject: protectedProcedure.input(
+    z.object({
+      name: z.string(),
+      githubUrl: z.string(),
+      gitHubToken: z.string().optional()
+    })
+  ).mutation(async ({ctx, input}) => {  
+    // First check if user has enough points
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.user.userId! },
+      select: { points: true }
+    });
+  
+    if (!user || user.points < 1) {
+      throw new Error('Not enough points to create a project');
+    }
+  
+    const project = await ctx.db.project.create({
+      data: {
+        githubUrl: input.githubUrl,
+        name: input.name,
+        userToProjects: {
+          create: {
+            userId: ctx.user.userId!,
+          }
         }
-      ) 
-      await indexGithubRepo(project.id,input.githubUrl,input.gitHubToken)
-      await pollCommits(project.id) 
-      return project                
-    }),
+      }
+    });
+  
+  
+    await indexGithubRepo(project.id, input.githubUrl, input.gitHubToken);
+    await pollCommits(project.id);
+      // Deduct 1 point from user
+      await ctx.db.user.update({
+        where: { id: ctx.user.userId! },
+        data: {
+          points: {
+            decrement: 1,
+          },
+        },
+      });
+    
+    return project;
+  }),
     getProjects: protectedProcedure.query(async({ctx})=> {
         return await ctx.db.project.findMany({
             where:{
@@ -131,5 +149,22 @@ export const projectRouter =createTRPCRouter({
         });
 
         return deletedProject;
+    }),
+    addPoints: protectedProcedure
+    .input(z.object({
+      points: z.number().positive(),
+      paymentId: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.user.userId!;
+      
+      return await ctx.db.user.update({
+        where: { id: userId },
+        data: {
+          points: {
+            increment: input.points,
+          },
+        },
+      });
     }),
 })
