@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
 // Define the available point packages
 const pointPackages = [
@@ -38,6 +39,7 @@ const loadRazorpay = (): Promise<any> => {
 export default function BuyPointsPage() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const { user } = useUser();
 
   // Fetch current user points
   const {
@@ -52,6 +54,11 @@ export default function BuyPointsPage() {
 
   // Function to handle the purchase process
   const handlePurchase = async (packageId: string, points: number, price: string) => {
+    if (!user?.id) {
+      toast.error('User not authenticated');
+      return;
+    }
+
     setIsProcessing(true);
     try {
       toast.info(`Initiating purchase for ${points} points (${price})...`);
@@ -63,7 +70,8 @@ export default function BuyPointsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           amount, 
-          currency: 'INR' 
+          currency: 'INR',
+          userId: user.id
         }),
       });
       
