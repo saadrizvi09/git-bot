@@ -29,6 +29,7 @@ model User {
        questionsAsked Question[]
 
        userToProjects UserToProject[]
+       payments Payment[]
 
 }
 
@@ -108,4 +109,26 @@ commitDate DateTime
 
 summary String
 
+}
+
+model Payment {
+    id   String     @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    razorpayOrderId String @unique
+    razorpayPaymentId String?
+    razorpaySignature String?
+
+    amount Int // Amount in smallest currency unit (paise for INR)
+    currency String @default("INR")
+    status String // pending, captured, failed
+    
+    userId String
+    user User @relation(fields: [userId], references: [id])
+
+    pointsAdded Int @default(0)
+
+    @@index([razorpayOrderId])
+    @@index([userId])
 }
