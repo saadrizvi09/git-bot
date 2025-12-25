@@ -38,7 +38,7 @@ const loadRazorpay = (): Promise<any> => {
 
 export default function BuyPointsPage() {
   const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingPackageId, setProcessingPackageId] = useState<string | null>(null);
   const { user } = useUser();
 
   // Fetch current user points
@@ -59,7 +59,7 @@ export default function BuyPointsPage() {
       return;
     }
 
-    setIsProcessing(true);
+    setProcessingPackageId(packageId);
     try {
       toast.info(`Initiating purchase for ${points} points (${price})...`);
       
@@ -128,7 +128,7 @@ export default function BuyPointsPage() {
         modal: {
           ondismiss: function() {
             toast.info('Payment cancelled');
-            setIsProcessing(false);
+            setProcessingPackageId(null);
           }
         }
       };
@@ -140,7 +140,7 @@ export default function BuyPointsPage() {
       console.error('Purchase error:', error);
       toast.error('Failed to process payment');
     } finally {
-      setIsProcessing(false);
+      setProcessingPackageId(null);
     }
   };
 
@@ -189,9 +189,9 @@ export default function BuyPointsPage() {
               <Button
                 className="w-full py-3 text-lg font-semibold"
                 onClick={() => handlePurchase(pkg.id, pkg.points, pkg.price)}
-                disabled={isProcessing}
+                disabled={processingPackageId !== null}
               >
-                {isProcessing ? "Processing..." : "Buy Now"}
+                {processingPackageId === pkg.id ? "Processing..." : "Buy Now"}
               </Button>
             </Card>
           ))}
