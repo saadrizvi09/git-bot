@@ -53,13 +53,22 @@ export async function POST(req: NextRequest) {
       const razorpayPayment = await razorpay.payments.fetch(paymentId);
       const order = await razorpay.orders.fetch(orderId);
       
-      // Get userId from order notes
+      // Get userId and points from order notes
       const userId = order.notes?.userId ? String(order.notes.userId) : null;
+      const pointsToAdd = order.notes?.points ? parseInt(String(order.notes.points)) : 0;
       
       if (!userId) {
         console.error('userId not found in order notes', { orderId });
         return NextResponse.json(
           { error: 'userId not found in order notes' },
+          { status: 400 }
+        );
+      }
+
+      if (!pointsToAdd || pointsToAdd <= 0) {
+        console.error('Invalid points in order notes', { orderId, pointsToAdd });
+        return NextResponse.json(
+          { error: 'Invalid points amount' },
           { status: 400 }
         );
       }
@@ -87,9 +96,6 @@ export async function POST(req: NextRequest) {
           message: 'Payment already processed' 
         });
       }
-
-      // Calculate points to add (e.g., 1 rupee = 10 points)
-      const pointsToAdd = Math.floor(amount / 100) * 10;
 
       // Update the database in a transaction
       await db.$transaction(async (tx) => {

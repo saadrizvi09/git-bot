@@ -10,11 +10,18 @@ const razorpay = new Razorpay({
 
 export async function POST(req: NextRequest) {
   try {
-    const { amount, currency = 'INR', userId } = await req.json();
+    const { amount, currency = 'INR', userId, points } = await req.json();
     
     if (!userId) {
       return NextResponse.json(
         { error: 'userId is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!points) {
+      return NextResponse.json(
+        { error: 'points is required' },
         { status: 400 }
       );
     }
@@ -25,6 +32,7 @@ export async function POST(req: NextRequest) {
       receipt: `receipt_${Date.now()}`,
       notes: {
         userId,
+        points: points.toString(),
       },
     };
 

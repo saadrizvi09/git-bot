@@ -71,7 +71,8 @@ export default function BuyPointsPage() {
         body: JSON.stringify({ 
           amount, 
           currency: 'INR',
-          userId: user.id
+          userId: user.id,
+          points
         }),
       });
       
@@ -106,14 +107,13 @@ export default function BuyPointsPage() {
           const verificationData = await verificationResponse.json();
           
           if (verificationData.success) {
-            // 5. Add points to user
-            await addPointsMutation.mutateAsync({
-              points,
-              paymentId: verificationData.paymentId,
-            });
+            // Payment verified - webhook will credit points automatically
+            toast.success(`Payment successful! Your points will be credited shortly.`);
             
-            toast.success(`Successfully added ${points} points!`);
-            refetchPoints(); // Refresh points display
+            // Refresh points after a short delay to allow webhook to process
+            setTimeout(() => {
+              refetchPoints();
+            }, 2000);
           } else {
             toast.error('Payment verification failed');
           }
