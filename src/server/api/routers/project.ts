@@ -167,4 +167,53 @@ createProject: protectedProcedure.input(
         },
       });
     }),
+
+    // Fetch new commits from GitHub and summarize them
+    fetchNewCommits: protectedProcedure
+      .input(z.object({
+        projectId: z.string(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const userId = ctx.user.userId!;
+
+        // Verify user has access to this project
+        const project = await ctx.db.project.findFirst({
+          where: {
+            id: input.projectId,
+            userToProjects: {
+              some: {
+                userId: userId
+              }
+            }
+          }
+        });
+
+        if (!project) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found or you do not have access.',
+          });
+        }
+
+        // Get count of commits before polling
+        const commitsBefore = await ctx.db.commit.count({
+          where: { projectId: input.projectId }
+        });
+
+        // Poll for new commits using existing function
+        await pollCommits(input.projectId);
+
+        // Get count after polling
+        const commitsAfter = await ctx.db.commit.count({
+          where: { projectId: input.projectId }
+        });
+
+        const newCommitsCount = commitsAfter - commitsBefore;
+
+        return {
+          success: true,
+          newCommitsCount,
+          totalCommits: commitsAfter
+        };
+      }),
 })

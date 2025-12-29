@@ -84,15 +84,17 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
-      <p className="text-lg text-gray-700 mb-8">Welcome to your dashboard! Here you can manage your tools and updated repositories.</p>
+    <>
+     <div className="w-[100vw]"></div>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
+        <p className="text-lg text-gray-700 mb-8">Welcome to your dashboard! Here you can manage your tools and updated repositories.</p>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold mb-4">Updated Repositories</h2>
-        <div className="w-[70vw]"></div> {/* This div seems to be a placeholder, consider its purpose */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold mb-4">Updated Repositories</h2>
 
-        {projects && projects.length > 0 ? (
+          {projects && projects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {projects.map(project => (
               <div
@@ -167,6 +169,7 @@ export default function DashboardPage() {
             </Link>
           </div>
         )}
+        </div>
       </div>
 
       {/* AlertDialog for Delete Confirmation */}
@@ -194,5 +197,7 @@ export default function DashboardPage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+    </>
+
   );
 }

@@ -69,7 +69,7 @@ const CreatePage = () => {
 
   return (
     <>
-     <div className="w-[80vw]"></div>
+     <div className="w-[100vw]"></div>
 
     <div className="flex justify-center p-4 md:p-8 min-h-[calc(100vh-64px)] items-center">
       <Card className="w-full max-w-lg">

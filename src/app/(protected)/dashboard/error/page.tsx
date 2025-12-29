@@ -11,6 +11,7 @@ import Image from 'next/image'; // For displaying GitBot logo in dialog header (
 import CodeReferences from '../code-references';
 import { checkBugs } from '../actions';
 import { api } from '@/trpc/react';
+import { ProjectSelector } from '../project-selector';
 
 const Scanerror = () => {
   const { project } = useProject();
@@ -60,6 +61,7 @@ const Scanerror = () => {
   return (
     <>
                  <div className="w-[80vw]"></div>
+      <ProjectSelector />
 
       {/* Main Container for the Scan Section */}
       {/* Removed pl-70 and w-[80vw]. Added p-4 for general padding and max-w-full for responsiveness. */}

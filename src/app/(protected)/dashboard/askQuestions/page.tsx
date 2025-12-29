@@ -11,6 +11,7 @@ import { api } from '@/trpc/react'
 import { toast } from 'sonner'
 import { askQuestion } from '../actions'
 import CodeReferences from '../code-references'
+import { ProjectSelector } from '../project-selector'
 
 const AskQuestionCard = () => {
     const { project } = useProject()
@@ -57,6 +58,7 @@ const AskQuestionCard = () => {
     return (
         <>
              <div className="w-[80vw]"></div>
+            <ProjectSelector />
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className='sm:max-w-[80vw] flex flex-col h-full max-h-[95vh] p-4'>
                     <DialogHeader className="mb-2">

@@ -146,8 +146,8 @@ export default function BuyPointsPage() {
 
   return (
     <>
-     <div className="w-[80vw]"></div>
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] p-4 md:p-8 bg-gray-50 dark:bg-gray-900">
+         <div className="w-[100vw]"></div>
+    <div className="min-h-screen flex flex-col items-center  p-2 md:p-8 bg-gray-50 dark:bg-gray-900">
       
       <Card className="w-full max-w-4xl shadow-lg">
         <CardHeader className="text-center pb-4">
@@ -199,5 +199,6 @@ export default function BuyPointsPage() {
       </Card>
     </div>
     </>
+
   );
 }
