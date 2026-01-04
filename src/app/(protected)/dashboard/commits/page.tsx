@@ -11,7 +11,10 @@ import { toast } from 'sonner'
 
 const CommitsPage = () => {
   const { projectId, project } = useProject()
-  const { data: commits, refetch, isLoading: isLoadingCommits } = api.project.getCommits.useQuery({ projectId })
+  const { data: commits, refetch, isLoading: isLoadingCommits } = api.project.getCommits.useQuery(
+    { projectId },
+    { enabled: !!projectId }
+  )
   
   const fetchNewCommits = api.project.fetchNewCommits.useMutation({
     onSuccess: (data) => {

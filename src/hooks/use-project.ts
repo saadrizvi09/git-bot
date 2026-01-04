@@ -13,7 +13,7 @@ const useProject = () => {
     project,
     projectId,
     setProjectId,
-    refreshProjects // Now, refreshProjects is correctly returned
+    refreshProjects 
   }
 }
 

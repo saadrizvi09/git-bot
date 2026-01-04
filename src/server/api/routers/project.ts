@@ -65,8 +65,29 @@ createProject: protectedProcedure.input(
         projectId: z.string()
     })).query(async ({ctx,input})=>
     {
-        return await ctx.db.commit.findMany({where:{projectId: input.projectId}})
+        // Verify user has access to this project
+        const project = await ctx.db.project.findFirst({
+          where: {
+            id: input.projectId,
+            userToProjects: {
+              some: {
+                userId: ctx.user.userId!
+              }
+            }
+          }
+        });
 
+        if (!project) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Project not found or you do not have access.',
+          });
+        }
+
+        return await ctx.db.commit.findMany({
+          where: { projectId: input.projectId },
+          orderBy: { commitDate: 'desc' }
+        });
     }),
     
     saveAnswer: protectedProcedure.input(z.object({
@@ -92,7 +113,8 @@ createProject: protectedProcedure.input(
     {
         return await ctx.db.question.findMany({
             where:{
-                projectId:input.projectId
+                projectId:input.projectId,
+                userId: ctx.user.userId!
             },
             include:{
                 user:true

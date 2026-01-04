@@ -5,13 +5,16 @@ import { api } from '@/trpc/react'
 import React from 'react'
 import MDEditor from '@uiw/react-md-editor'
 import CodeReferences from '../dashboard/code-references'
+import { ProjectSelector } from '../dashboard/project-selector'
 
 const QAPage = () => {
-    const { projectId } = useProject()
-    const { data: questions, isLoading, isError } = api.project.getQuestions.useQuery({ projectId })
+    const { projectId, project } = useProject()
+    const { data: questions, isLoading, isError } = api.project.getQuestions.useQuery(
+        { projectId },
+        { enabled: !!projectId }
+    )
     const [questionIndex, setQuestionIndex] = React.useState(0);
     const question = questions?.[questionIndex]
-    const {project}= useProject()
 
     return (
         <>
@@ -19,6 +22,7 @@ const QAPage = () => {
                
     
  <div className="w-[80vw]"></div>
+                <ProjectSelector />
                 <div className="h-4"></div> {/* Spacer */}
 
                 <h1 className="text-xl font-semibold p-3">Saved </h1>
