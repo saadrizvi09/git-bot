@@ -272,7 +272,7 @@ ${fileTree.slice(0, 2000)}
 - ALWAYS use read_file to examine actual implementation patterns before suggesting code
 - Use search_codebase to find similar features or components
 - Use web_search for external documentation, npm packages, or best practices
-- Tech stack: Next.js, React, TypeScript, Tailwind CSS, Prisma, tRPC
+- Tech stack: Assume on your own using the file patterns (e.g., Next.js, React, TypeScript)
 - Maintain consistency with existing code patterns
 - **MOST IMPORTANT**: Provide COMPLETE, PRODUCTION-READY code for ALL new files
 - Include ALL imports, ALL functions, ALL exports - no placeholders or "..." in code

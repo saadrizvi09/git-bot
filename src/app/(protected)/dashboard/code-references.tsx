@@ -13,34 +13,22 @@ const CodeReferences = ({ filesReferences }: Props) => {
     const [tab, setTab] = React.useState('');
 
     React.useEffect(() => {
-        // Condition 1: If filesReferences is NOT empty AND
-        //             (no tab is currently selected OR the current tab is no longer in the list)
         if (filesReferences.length > 0 && (!tab || !filesReferences.some(f => f.fileName === tab))) {
-            // TypeScript still sees a theoretical possibility of filesReferences[0] being undefined
-            // if filesReferences.length was 0 before this check in some very complex flow.
-            // The non-null assertion operator `!` after `filesReferences[0]` tells TypeScript
-            // "I know this won't be undefined here because I just checked the length."
-            setTab(filesReferences[0]!.fileName); // <-- FIX APPLIED HERE
+         
+            setTab(filesReferences[0]!.fileName);
         }
-        // Condition 2: If filesReferences IS empty AND a tab is currently selected
         else if (filesReferences.length === 0 && tab !== '') {
-            setTab(''); // Clear the selected tab
+            setTab(''); 
         }
     }, [filesReferences, tab]);
 
     
 
-    // Additional safeguard for immediate render cycles before useEffect updates `tab`
-    // This is useful if filesReferences goes from empty to non-empty.
     if (!tab && filesReferences.length > 0) {
-        setTab(filesReferences[0]!.fileName); // <-- FIX APPLIED HERE
-        return null; // Return null for this render cycle to avoid rendering with an invalid `tab`
-                     // The component will re-render immediately with the correct `tab`.
+        setTab(filesReferences[0]!.fileName); 
+        return null; 
     }
-    // This second check for `!tab && filesReferences.length === 0` is technically redundant
-    // with the first `if (filesReferences.length === 0)` block, but harmless.
-    // I'll remove it for conciseness as the first check covers it.
-
+  
     return (
         <div className='h-full flex flex-col'>
             <Tabs value={tab} onValueChange={setTab} className="flex-grow flex flex-col">

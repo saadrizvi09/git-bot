@@ -6,7 +6,6 @@ import { generateEmbedding, geminiApiLimiter } from '@/lib/gemini'
 import { db } from '@/server/db'
 
 // Initialize the Google Generative AI model for AI SDK,
-// making sure to pass the rate limiter to its fetch calls.
 const google = createGoogleGenerativeAI({
     apiKey:process.env.GEMINI_API_KEY_2,
     fetch: async (input, init) => {
