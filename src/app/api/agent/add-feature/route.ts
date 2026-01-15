@@ -135,7 +135,7 @@ export async function agentAddFeature(
           WHERE 1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) > 0.3
           AND "projectId" = ${projectId}
           ORDER BY similarity DESC
-          LIMIT 5
+          LIMIT 3
         `) as { fileName: string; summary: string; sourceCode: string; similarity: number }[];
 
         // Add searched files to references so they show in the UI
