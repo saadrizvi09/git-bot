@@ -30,8 +30,7 @@ const SKIP_FILES = [
 ];
 
 // Max file size to read (in characters) - keep under token limits for free tier
-// Groq free tier: 12,000 TPM - be conservative
-const MAX_FILE_CONTENT_LENGTH = 1000;
+const MAX_FILE_CONTENT_LENGTH = 1500;
 
 // File reference type (matches askQuestion format)
 export type FileReference = {
@@ -136,7 +135,7 @@ export async function agentAddFeature(
           WHERE 1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) > 0.3
           AND "projectId" = ${projectId}
           ORDER BY similarity DESC
-          LIMIT 3
+          LIMIT 5
         `) as { fileName: string; summary: string; sourceCode: string; similarity: number }[];
 
         // Add searched files to references so they show in the UI
@@ -260,32 +259,72 @@ export async function agentAddFeature(
 
       const { fullStream } = await streamText({
         model: groq('llama-3.3-70b-versatile'),
-        maxSteps: 5,  // Reduced to save input tokens for more output
-        maxTokens: 8000,  // Increased output limit
-        system: `You are a Senior Software Architect. Help add features to codebases.
+        maxSteps: 6,
+        maxTokens: 12000,
+        system: `You are a Senior Software Architect AI assistant. Help developers add new features and components.
+
+## MANDATORY First Steps (You MUST do these):
+1. **REQUIRED**: Use get_file_tree to explore the project structure
+2. **REQUIRED**: Use search_codebase to find related files (e.g., existing routes, components, APIs)
+3. **REQUIRED**: Use read_file on AT LEAST 2-3 relevant files to understand existing patterns
+4. Use web_search if you need external documentation or best practices
 
 ## Workflow:
-1. Use get_file_tree to explore structure
-2. Use search_codebase to find related files
-3. Use read_file on 1-2 key files
-4. Provide implementation with COMPLETE code
+1. Analyze the user's request carefully
+2. Use get_file_tree to explore the project structure
+3. **YOU MUST use read_file** to examine relevant files - don't skip this step!
+4. Use search_codebase to find similar implementations or related code
+5. Use web_search when you need external knowledge (libraries, best practices, documentation)
+6. Provide a detailed, context-aware implementation plan with COMPLETE CODE
 
-## Project Files (sample):
+## Project Structure:
 \`\`\`
 ${fileTree.slice(0, 2000)}
 \`\`\`
 
-## Guidelines:
-- Read files before suggesting code
-- Match existing patterns
-- Provide COMPLETE, production-ready code
-- Include ALL imports and exports
+## Critical Guidelines:
+- **YOU MUST USE read_file TOOL** - This is not optional! Read at least 2-3 relevant files
+- ALWAYS use get_file_tree first to understand the project structure
+- ALWAYS use read_file to examine actual implementation patterns before suggesting code
+- Use search_codebase to find similar features or components
+- Use web_search for external documentation, npm packages, or best practices
+- Tech stack: Assume on your own using the file patterns (e.g., Next.js, React, TypeScript)
+- Maintain consistency with existing code patterns
+- **MOST IMPORTANT**: Provide COMPLETE, PRODUCTION-READY code for ALL new files
+- Include ALL imports, ALL functions, ALL exports - no placeholders or "..." in code
+- Each code block should be copy-paste ready with FULL implementation
 
-## Output Format:
-1. **Overview** - What will be implemented
-2. **Files to Create/Modify** - Complete code for each file
-3. **Integration Steps** - How to wire everything
-4. **Dependencies** - npm install commands if needed
+## Output Format (Markdown):
+1. **Overview** - Brief summary of what will be implemented
+
+2. **File Analysis** - Files you examined and key patterns found (mention which files you read)
+
+3. **Complete File Implementations** - For EACH new/modified file, provide:
+   ### \`path/to/file.ts\` (New File / Modified)
+   \`\`\`typescript
+   // COMPLETE file contents here
+   // Include ALL imports
+   // Include ALL code - no placeholders
+   // Make it production-ready
+   \`\`\`
+   **Explanation**: What this file does and why
+
+4. **Integration Steps** - Step-by-step instructions on:
+   - Where to place each file
+   - What to modify in existing files (with exact code changes)
+   - How to wire everything together
+
+5. **Dependencies** - Installation commands for any packages:
+   \`\`\`bash
+   npm install package-name
+   \`\`\`
+
+6. **Environment Variables** - Any required .env additions:
+   \`\`\`
+   VARIABLE_NAME=value
+   \`\`\`
+
+7. **Testing** - How to verify the implementation works
 `,
         prompt: componentDescription,
         tools: {
