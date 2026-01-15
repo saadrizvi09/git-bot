@@ -129,14 +129,30 @@ export async function agentAddFeature(
         const vectorQuery = `[${queryVector.join(',')}]`;
 
         const results = (await db.$queryRaw`
-          SELECT "fileName", "summary",
+          SELECT "fileName", "summary", "sourceCode",
           1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) AS similarity
           FROM "SourceCodeEmbedding"
           WHERE 1 - ("summaryEmbedding" <=> ${vectorQuery}::vector) > 0.3
           AND "projectId" = ${projectId}
           ORDER BY similarity DESC
           LIMIT 5
-        `) as { fileName: string; summary: string; similarity: number }[];
+        `) as { fileName: string; summary: string; sourceCode: string; similarity: number }[];
+
+        // Add searched files to references so they show in the UI
+        for (const r of results) {
+          if (!filesReferences.some(f => f.fileName === r.fileName)) {
+            const truncatedCode = r.sourceCode.length > MAX_FILE_CONTENT_LENGTH
+              ? r.sourceCode.slice(0, MAX_FILE_CONTENT_LENGTH) + '\n// ... truncated'
+              : r.sourceCode;
+            filesReferences.push({
+              fileName: r.fileName,
+              sourceCode: truncatedCode,
+              summary: r.summary,
+            });
+            console.log(`[Agent] Added searched file to references: ${r.fileName}. Total files: ${filesReferences.length}`);
+          }
+        }
+        filesReferencesStream.update([...filesReferences]);
 
         const result = {
           success: true,
